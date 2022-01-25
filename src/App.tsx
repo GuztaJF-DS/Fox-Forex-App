@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import Header from './components/Header'
+import Header from './components/Header';
 import GraphicPart from './components/GraphicPart';
 import BidAndOffer from './components/BidAndOffer';
 import Exchange from './components/Exchange';
