@@ -1,0 +1,39 @@
+<!-- ./client/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <body>
+    <button onClick="sendChecker()">Hit Me</button>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.0/socket.io.js"></script>
+
+    <script>
+      const socket = io("http://localhost:8080");
+
+      let SocketData= "";
+
+      function setSocketDataResponse(message){
+        SocketData = message;
+      };
+    
+      socket.on("sendData",function(socket){
+        setSocketDataResponse(socket)
+        console.log(socket)
+      })
+
+      socket.on("sendQuery",function(socket){
+        console.log(socket)
+      })
+
+      function sendChecker() {
+        socket.emit("SendChecker", "true");
+      }
+
+    </script>
+  </body>
+</html>
