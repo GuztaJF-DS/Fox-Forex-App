@@ -1,17 +1,25 @@
-import React from 'react';
-import WebsocketConnection from '../api/websocketConnection'
+import React,{useState,useEffect} from 'react';
 
 
-function BidAndOffer(){
-    let ForexData=WebsocketConnection()
+function BidAndOffer(props:any){
+    var socket=props.Socket
+    const [ForexData,setForexData]=useState('{"symbol":"GBPUSD","ts":"0","bid":0,"ask":0,"mid":0}');
 
+    useEffect(()=>{
+        socket.on("sendData",(data:any)=>{
+            setForexData(data)
+        })
+    },[])
 
     return(
         <div className='BidAndOffer'>
             <div className='Bid'>
             Bid:
             <div>
-                {JSON.parse(ForexData).bid}
+                {
+                (ForexData!=="Connected")?
+                JSON.parse(ForexData).bid:0
+                }
             </div>
             </div>
 
@@ -28,7 +36,10 @@ function BidAndOffer(){
             <div className='Offer'>
             Offer:
             <div>
-                {JSON.parse(ForexData).ask}
+            {
+                (ForexData!=="Connected")?
+                JSON.parse(ForexData).ask:0
+                }
             </div>
             </div>
         </div>

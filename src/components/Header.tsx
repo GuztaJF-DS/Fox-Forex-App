@@ -11,7 +11,7 @@ function Header(){
               Current Profit:0$
             </div>
             <div>
-              Current Profit:0$
+              Current lots:0
             </div>
           </div>
       </div>

@@ -1,12 +1,14 @@
 import React from 'react';
 import './App.css';
-import Header from './components/Header';
-import GraphicPart from './components/GraphicPart';
-import BidAndOffer from './components/BidAndOffer';
-import Exchange from './components/Exchange';
-import PastTrades from './components/PastTrades';
+import Header from 'components/Header';
+import GraphicPart from 'components/GraphicPart';
+import BidAndOffer from 'components/BidAndOffer';
+import Exchange from 'components/Exchange';
+import PastTrades from 'components/PastTrades';
+import WebsocketConnection from 'api/WebsocketConnection'
 
 function App() {
+  let WebSocket=WebsocketConnection()
   return (
     <div className="app">
       <Header/>
@@ -15,8 +17,8 @@ function App() {
           <GraphicPart/>
         </div>
         <div className='desktopRight'>
-          <BidAndOffer/>
-          <Exchange/>
+          <BidAndOffer Socket={WebSocket}/>
+          <Exchange Socket={WebSocket}/>
           <PastTrades/>
         </div>
       </div>

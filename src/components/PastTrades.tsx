@@ -1,6 +1,16 @@
-import React from 'react';
+import React,{useState,useEffect} from 'react';
+import api from 'api/AxiosConnection';
 
 function PastTrades(){
+  const [tradeData,setTradeData]=useState([])
+  const [trigger,setTrigger]=useState(false);
+  useEffect(()=>{
+    api.get("/trade/getall").then(function(data:any){
+      setTradeData(data.data)
+    });
+  },[trigger])
+
+
     return(
         <div className='PastTrades'>
         <p>Past Trades</p>
@@ -15,78 +25,24 @@ function PastTrades(){
             </div>
           <div className='line'></div>
           </div>
-          <div className='Content'>
-            <div className='Lots'>1 lot</div>
-            <div className='ExchangeType'>Sell</div>
-            <div className='Date'>03/01/22 13:30:56</div>
-            <div className='Profit'>2.00$</div>
-          </div>
-          <div className='Content'>
-            <div className='Lots'>1 lot</div>
-            <div className='ExchangeType'>Sell</div>
-            <div className='Date'>03/01/22 13:30:56</div>
-            <div className='Profit'>2.00$</div>
-          </div>
-          <div className='Content'>
-            <div className='Lots'>1 lot</div>
-            <div className='ExchangeType'>Sell</div>
-            <div className='Date'>03/01/22 13:30:56</div>
-            <div className='Profit'>2.00$</div>
-          </div>
-          <div className='Content'>
-            <div className='Lots'>1 lot</div>
-            <div className='ExchangeType'>Sell</div>
-            <div className='Date'>03/01/22 13:30:56</div>
-            <div className='Profit'>2.00$</div>
-          </div>
-          <div className='Content'>
-            <div className='Lots'>1 lot</div>
-            <div className='ExchangeType'>Sell</div>
-            <div className='Date'>03/01/22 13:30:56</div>
-            <div className='Profit'>2.00$</div>
-          </div>
+          {tradeData.map((data:any,index:number)=>{
+            let DateDay=data.StartDate.split("T")
+            let DateHour=DateDay[1].split(".");
+            let Exchange=(data.ExgangeType==true)?"Buy":"Sell"
+            let Profit=(data.Profit!==undefined)?data.Profit:0
 
-          <div className='Content'>
-            <div className='Lots'>1 lot</div>
-            <div className='ExchangeType'>Sell</div>
-            <div className='Date'>03/01/22 13:30:56</div>
-            <div className='Profit'>2.00$</div>
-          </div>
-          <div className='Content'>
-            <div className='Lots'>1 lot</div>
-            <div className='ExchangeType'>Sell</div>
-            <div className='Date'>03/01/22 13:30:56</div>
-            <div className='Profit'>2.00$</div>
-          </div>
-          <div className='Content'>
-            <div className='Lots'>1 lot</div>
-            <div className='ExchangeType'>Sell</div>
-            <div className='Date'>03/01/22 13:30:56</div>
-            <div className='Profit'>2.00$</div>
-          </div>
-          <div className='Content'>
-            <div className='Lots'>1 lot</div>
-            <div className='ExchangeType'>Sell</div>
-            <div className='Date'>03/01/22 13:30:56</div>
-            <div className='Profit'>2.00$</div>
-          </div>
-          <div className='Content'>
-            <div className='Lots'>1 lot</div>
-            <div className='ExchangeType'>Sell</div>
-            <div className='Date'>03/01/22 13:30:56</div>
-            <div className='Profit'>2.00$</div>
-          </div>
-
-          <div className='Content'>
-            <div className='Lots'>1 lot</div>
-            <div className='ExchangeType'>Sell</div>
-            <div className='Date'>03/01/22 13:30:56</div>
-            <div className='Profit'>2.00$</div>
-          </div>
+            return(
+              <div className='Content' key={index}>
+                <div className='Lots'>{data.Lots}</div>
+                <div className='ExchangeType'>{Exchange}</div>
+                <div className='Date'>{DateDay[0]+" - "+DateHour[0]}</div>
+                <div className='Profit'>{Profit}$</div>
+              </div>
+            )
+          })}
           
         </div>
       </div>
     )
 }
-
 export default PastTrades
