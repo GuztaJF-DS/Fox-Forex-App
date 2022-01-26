@@ -1,9 +1,11 @@
 import React,{useState,useEffect} from 'react';
 import api from 'api/AxiosConnection';
+import {useTriggerContext} from 'context/triggerContext';
 
 function PastTrades(){
+  const {trigger,setTrigger}=useTriggerContext()
+
   const [tradeData,setTradeData]=useState([])
-  const [trigger,setTrigger]=useState(false);
   useEffect(()=>{
     api.get("/trade/getall").then(function(data:any){
       setTradeData(data.data)
