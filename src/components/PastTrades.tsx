@@ -29,9 +29,9 @@ function PastTrades(){
           <div className='line'></div>
           </div>
           {tradeData.map((data:any,index:number)=>{
-            let DateDay=data.StartDate.split("T")
+            let DateDay=(data.FinalDate!==undefined)?data.FinalDate.split("T"):data.StartDate.split("T")
             let DateHour=DateDay[1].split(".");
-            let Exchange=(data.ExgangeType==true)?"Buy":"Sell"
+            let Exchange=(data.ExchangeType==true)?"Buy":"Sell"
             let Profit=(data.Profit!==undefined)?data.Profit:0
 
             return(

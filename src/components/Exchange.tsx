@@ -54,14 +54,16 @@ function Exchange(props:any){
    
     function HandleBuyOrSell(type:boolean){
       let now = new Date().toISOString()
-
-      api.post("/trade/createunfinished",
-      {"Lots":lotsValue,"ExchangeType":type,"StartDate":now,"SwapTax":0.5,"NextOpening":forexValues.mid})
-      .then(function(data:any){
-        setLotsValue("0");
-        setTriggerState(!triggerState)
-        setTriggerRefresh(!triggerRefresh)
-      })
+      let LotsNumber=parseFloat(lotsValue)
+      if(forexValues.mid!==0 && lotsValue.length!==0 && LotsNumber>0){
+        let query={"Lots":lotsValue,"ExchangeType":type,"StartDate":now,"SwapTax":0.5,"NextOpening":forexValues.mid}
+        api.post("/trade/createunfinished",query)
+        .then(function(data:any){
+          setLotsValue("0");
+          setTriggerState(!triggerState)
+          setTriggerRefresh(!triggerRefresh)
+        })
+      }
     }
     function triggerStuff(){
       setTriggerState(!triggerState)
@@ -82,13 +84,13 @@ function Exchange(props:any){
     <div className='Exchange'>
       <p>Lots</p>
         <div className='Buttons'>
-            <button disabled={triggerState} onClick={()=>HandleBuyOrSell(false)} className="SellButton">Sell</button>
-            <input disabled={triggerState} className='Lots' value={lotsValue} 
+            <button disabled={triggerRefresh} onClick={()=>HandleBuyOrSell(false)} className="SellButton">Sell</button>
+            <input disabled={triggerRefresh} className='Lots' value={lotsValue} 
             onChange={(e)=>setLotsValue(e.target.value)}
             type="number"/>
-            <button disabled={triggerState} onClick={()=>HandleBuyOrSell(true)} className='BuyButton'>Buy</button>
+            <button disabled={triggerRefresh} onClick={()=>HandleBuyOrSell(true)} className='BuyButton'>Buy</button>
             <div>
-              <button disabled={!triggerState} onClick={()=>triggerStuff()} className='ExchangeButton'>Exchange</button>
+              <button disabled={!triggerRefresh} onClick={()=>triggerStuff()} className='ExchangeButton'>Exchange</button>
             </div>
         </div>
       </div>

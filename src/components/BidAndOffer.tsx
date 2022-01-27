@@ -62,6 +62,7 @@ function BidAndOffer(props:any){
             if(TableData.data.length!==0){
                 if(TableData.data[TableData.data.length-1].Finished===false){
                     setTrade(TableData.data[TableData.data.length-1]);
+                    setTriggerRefresh(true)
                 }else{
                     setTrade({ExchangeType: false,
                       Finished: false,
@@ -72,6 +73,8 @@ function BidAndOffer(props:any){
                       __v: 0,
                       _id: ''
                   })
+
+                setOpeningColor("fff")
               }
               }
          });
@@ -100,6 +103,26 @@ function BidAndOffer(props:any){
         let swap=SwapFunction(pip.PipPrice,trade.ExchangeType,trade.Lots,trade.SwapTax,0);
         let finalProfit=FinalProfitFunction(pip.Profit,swap)
         setTempState({FinalProfit:finalProfit,PipQtd:pip.PipQtd,PipPrice:pip.PipPrice})
+
+        if(trade.ExchangeType==true && trade.NextOpening!==0){
+            if(forexValues.mid>trade.NextOpening){
+                setOpeningColor("red")
+            }
+            else{
+                setOpeningColor("green")
+            }
+        }
+        else if(trade.ExchangeType==false && trade.NextOpening!==0){
+            if(forexValues.mid>trade.NextOpening){
+                setOpeningColor("green")
+            }
+            else{
+                setOpeningColor("red")
+            }
+        }
+        else{
+            setOpeningColor("#fff")
+        }
     },[forexValues])
     
     return(
