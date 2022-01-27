@@ -1,26 +1,54 @@
 import React,{useEffect,useState} from 'react';
 import api from 'api/AxiosConnection';
-import {useTriggerContext} from 'context/triggerContext';
+import {useTriggerStateContext} from 'contexts/triggerStateContext';
+import { useProfitContext } from 'contexts/ProfitContext';
+import { useTriggerRefreshContext } from 'contexts/triggerRefreshContext'
 
+interface ITradeTypes{
+  ExchangeType: boolean;
+  Finished: boolean;
+  Lots: number;
+  NextOpening: number;
+  StartDate: string;
+  SwapTax: number;
+  __v: number;
+  _id: string;
+}
+
+interface IForexTypes{
+  symbol:string;
+  ts:string;
+  bid:number;
+  ask:number;
+  mid:number;
+}
 
 function Exchange(props:any){
-  var socket=props.Socket
-  const [ForexData,setForexData]=useState({"symbol":"GBPUSD","ts":"0","bid":0,"ask":0,"mid":0});
-  const [updateData,setUpdateData]=useState();
-  const {trigger,setTrigger}=useTriggerContext();
-  const [openTrade,setOpenTrade]=useState<boolean>(true)
-
+  const websocket=props.socket;
+  const {profitValues,setProfitValues}=useProfitContext();
+  const {triggerState,setTriggerState}=useTriggerStateContext();
+  const {triggerRefresh,setTriggerRefresh}=useTriggerRefreshContext()
+  const [forexValues,setForexValues]=useState<IForexTypes>({
+      symbol: "",
+      ts:"",
+      bid: 0,
+      ask:0,
+      mid:0
+  })
   useEffect(()=>{
-      socket.on("sendData",(data:any)=>{
-          setForexData(data)          
-      })
+     websocket.on("sendData",(data:any)=>{
+        setForexValues(JSON.parse(data))
+    })
+    return () => {
+      websocket.disconnect();
+    }
   },[])
 
   useEffect(()=>{
-    api.get("/trade/getall").then(function(TableData:any){
-      setOpenTrade(!TableData.data[TableData.data.length-1].Finished);
-    });
-  },[updateData])
+    if(profitValues.FinalProfit!==0 && profitValues.PipQtd!==0 && profitValues.PipPrice!==0){
+      HandleExchange()
+    }
+  },[profitValues])
 
     const [lotsValue,setLotsValue]=useState("0");
    
@@ -28,24 +56,39 @@ function Exchange(props:any){
       let now = new Date().toISOString()
 
       api.post("/trade/createunfinished",
-      {"Lots":lotsValue,"ExgangeType":type,"StartDate":now,"SwapTax":0.5,"NextOpening":ForexData.mid})
+      {"Lots":lotsValue,"ExchangeType":type,"StartDate":now,"SwapTax":0.5,"NextOpening":forexValues.mid})
       .then(function(data:any){
         setLotsValue("0");
-        setTrigger(!trigger )
+        setTriggerState(!triggerState)
+        setTriggerRefresh(!triggerRefresh)
       })
     }
+    function triggerStuff(){
+      setTriggerState(!triggerState)
+    }
 
+    function HandleExchange(){
+      let now = new Date().toISOString()
+
+      let query={Profit:profitValues.FinalProfit,FinalDate:now,PipQtd:profitValues.PipQtd,PipPrice:profitValues.PipPrice}
+
+        api.post("/trade/updatefinished",query)
+        .then(function(data:any){
+          setTriggerRefresh(!triggerRefresh)
+        })
+    }
+    
     return(
     <div className='Exchange'>
       <p>Lots</p>
         <div className='Buttons'>
-            <button disabled={openTrade} onClick={()=>HandleBuyOrSell(false)} className={`SellButton ${openTrade}`}>Sell</button>
-            <input disabled={openTrade} className='Lots' value={lotsValue} 
+            <button disabled={triggerState} onClick={()=>HandleBuyOrSell(false)} className="SellButton">Sell</button>
+            <input disabled={triggerState} className='Lots' value={lotsValue} 
             onChange={(e)=>setLotsValue(e.target.value)}
             type="number"/>
-            <button disabled={openTrade} onClick={()=>HandleBuyOrSell(true)} className='BuyButton'>Buy</button>
+            <button disabled={triggerState} onClick={()=>HandleBuyOrSell(true)} className='BuyButton'>Buy</button>
             <div>
-              <button  className='ExchangeButton'>Exchange</button>
+              <button disabled={!triggerState} onClick={()=>triggerStuff()} className='ExchangeButton'>Exchange</button>
             </div>
         </div>
       </div>

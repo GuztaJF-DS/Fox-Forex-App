@@ -1,16 +1,17 @@
 import React,{useState,useEffect} from 'react';
 import api from 'api/AxiosConnection';
-import {useTriggerContext} from 'context/triggerContext';
+import { useTriggerRefreshContext } from 'contexts/triggerRefreshContext'
 
 function PastTrades(){
-  const {trigger,setTrigger}=useTriggerContext()
+  const {triggerRefresh,setTriggerRefresh}=useTriggerRefreshContext()
 
   const [tradeData,setTradeData]=useState([])
   useEffect(()=>{
     api.get("/trade/getall").then(function(data:any){
       setTradeData(data.data)
     });
-  },[trigger])
+  },[triggerRefresh])
+
 
 
     return(
