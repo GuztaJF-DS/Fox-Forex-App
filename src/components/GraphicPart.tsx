@@ -1,6 +1,6 @@
 import React,{useState,useEffect} from 'react';
 import api from 'api/AxiosConnection'
-import { VictoryChart,VictoryLine,VictoryVoronoiContainer } from 'victory';
+import { VictoryChart,VictoryLine,VictoryVoronoiContainer,VictoryAxis } from 'victory';
 
 type allArray=[{
   x:number,
@@ -69,13 +69,24 @@ function GraphicPart(){
                 />
               }
             >
+              <VictoryAxis dependentAxis
+                style={{
+                  axis: {stroke: "white"},
+                  tickLabels:{ fill: "white" },
+                  ticks:{ fill: "white" }
+                }}
+              />
               <VictoryLine
                style={{
                   data: { stroke: "#c43a31" },
-                  parent: { border: "1px solid #ccc"}
                 }}
                 data={graphicInfo}
               />
+              <VictoryAxis style={{
+                  axis: {stroke: "white"},
+                  tickLabels:{ fill: "white" },
+                  ticks:{ fill: "white" }
+                }}/>
             </VictoryChart>
           </div>
         </div>
