@@ -57,16 +57,11 @@ body {
 .GraphicPart > .CurrencyName{
   font-size:1.3em;
   font-weight: 800;
-  margin-bottom: 10px;
   margin-top: 10px;
 }
 
 .Graphic{
-  border:1px red solid;
-  width:90%;
-  margin-left: 5%;
-  height:175px;
-  border-radius: 15px;
+  height:30vh;
 }
 
 /*--------------------------------------------------------------------------------------------*/
@@ -305,11 +300,8 @@ body {
 /*--------------------------------------------------------------------------------------------*/
 
 .Graphic{
-  border:1px red solid;
-  width:90%;
-  margin-left: 5%;
+  margin-left: 3%;
   height:75vh;
-  border-radius: 15px;
 }
 
 /*--------------------------------------------------------------------------------------------*/

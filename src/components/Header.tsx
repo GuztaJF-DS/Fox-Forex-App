@@ -12,7 +12,6 @@ function Header(){
   useEffect(()=>{
     setTimeout(function(){
       api.get("/user/get").then(function(data:any){
-        console.log(data)
         setHeaderData({
           Profit:data.data.currentProfit,
           Lots:data.data.currentLots
