@@ -51,6 +51,18 @@ function Exchange(props:any){
   },[profitValues])
 
     const [lotsValue,setLotsValue]=useState("0");
+
+    function HandleUserUpdate(lots:number,profit:number){
+      api.get("/user/get").then(function(data:any){
+        let CurrentProfit=data.data.currentProfit;
+        CurrentProfit+=profit;
+
+        api.post("/user/update",{currentProfit:CurrentProfit,currentLots:lots})
+        .then(function(data:any){
+          setTriggerRefresh(!triggerRefresh)
+        })
+      })
+    }
    
     function HandleBuyOrSell(type:boolean){
       let now = new Date().toISOString()
@@ -59,14 +71,13 @@ function Exchange(props:any){
         let query={"Lots":lotsValue,"ExchangeType":type,"StartDate":now,"SwapTax":0.5,"NextOpening":forexValues.mid}
         api.post("/trade/createunfinished",query)
         .then(function(data:any){
-          setLotsValue("0");
           setTriggerState(!triggerState)
           setTriggerRefresh(!triggerRefresh)
+          let lots=LotsNumber;
+          setLotsValue("0");
+          HandleUserUpdate(lots,0)
         })
       }
-    }
-    function triggerStuff(){
-      setTriggerState(!triggerState)
     }
 
     function HandleExchange(){
@@ -77,7 +88,12 @@ function Exchange(props:any){
         api.post("/trade/updatefinished",query)
         .then(function(data:any){
           setTriggerRefresh(!triggerRefresh)
+          HandleUserUpdate(0,profitValues.FinalProfit)
         })
+    }
+
+    function triggerStuff(){
+      setTriggerState(!triggerState)
     }
     
     return(
