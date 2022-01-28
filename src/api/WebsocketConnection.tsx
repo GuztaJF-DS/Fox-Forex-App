@@ -7,6 +7,10 @@ function WebsocketConnection(){
         console.log("Disconnected")
     })
 
+    socket.on("connect",()=>{
+        console.log("connect")
+    })
+
     return(
         socket
     )

@@ -34,7 +34,7 @@ function GraphicPart(){
     let today=getToday(now)
     
 
-    api.get(`https://marketdata.tradermade.com/api/v1/timeseries?currency=GBPUSD&api_key=wPQ2qY07oCIDKLuS7I5p&start_date=${aHourEarly}&end_date=${today}&format=records&interval=minute&period=5`)
+    api.get(`https://marketdata.tradermade.com/api/v1/timeseries?currency=GBPUSD&api_key=8yQD1Y3AigIT8HEIa8Yf&start_date=${aHourEarly}&end_date=${today}&format=records&interval=minute&period=5`)
     .then(function(data:any){
       let FirstData=data.data.quotes[0]
       let FirstSplitedDate=(FirstData.date.split(" "))
